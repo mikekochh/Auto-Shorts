@@ -1,9 +1,13 @@
 "use client";
 import React, { useState } from 'react';
+import { useStep } from '../context/stepContext';
+import { useShort } from '../context/shortContext';
 
 export default function Script() {
 
-    const [topic, setTopic] = useState('');
+    const { nextStep } = useStep();
+    const { setScript, topic, setTopic } = useShort();
+    
     const [details, setDetails] = useState(''); 
     const [scriptResponse, setScriptResponse] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +15,12 @@ export default function Script() {
     const [editMode, setEditMode] = useState(false);
 
     const fetchScript = async () => {
+
+        if (!topic) {
+            setError('Please enter a topic for your short.');
+            return;
+        }
+
         setIsLoading(true);
         setError('');
         try {
@@ -40,12 +50,12 @@ export default function Script() {
     }
 
     const selectScript = () => {
-        console.log("Looks Good!");
+        nextStep();
+        setScript(scriptResponse);
     }
 
     const editScript = () => {
         setEditMode(true);
-        console.log("Editing script!");
     }
 
     const finishedEdit = () => {
@@ -54,7 +64,6 @@ export default function Script() {
 
     const redoScript = () => {
         setScriptResponse('');
-        console.log("Redoing script!");
     }
 
     const useExistingScript = () => {

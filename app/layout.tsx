@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { StepProvider } from "./context/stepContext";
+import { ShortProvider } from "./context/shortContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <ShortProvider>
+        <StepProvider>
+          <body className={inter.className}>{children}</body>
+        </StepProvider>
+      </ShortProvider>
     </html>
   );
 }
