@@ -6,12 +6,20 @@ import { createContext, useContext, useState } from 'react';
 interface ShortContextType {
     script: string;
     setScript: (newScript: string) => void;
-    topic: string;
-    setTopic: (newTopic: string) => void;
-    imagePrompts: string;
-    setImagePrompts: (newImagePrompts: string) => void;
     scriptArray: string[];
     setScriptArray: (newScript: string[]) => void;
+
+    topic: string;
+    setTopic: (newTopic: string) => void;
+
+    imagePrompts: string;
+    setImagePrompts: (newImagePrompts: string) => void;
+    imagePromptsArray: string[];
+    setImagePromptsArray: (newImagePromptsArray: string[]) => void;
+
+    images: string[];
+    setImages: (newImages: string) => void;
+
     splitUpScript: string;
     setSplitUpScript: (newSplitUpScript: string) => void;
     splitUpScriptArray: string[];
@@ -21,12 +29,17 @@ interface ShortContextType {
 const defaultState: ShortContextType = {
     script: '',
     setScript: (newScript: string) => {},
-    topic: '',
-    setTopic: (newTopic: string) => {},
-    imagePrompts: '',
-    setImagePrompts: (newImagePrompts: string) => {},
     scriptArray: [],
     setScriptArray: (newScriptArray: string[]) => {},
+
+    topic: '',
+    setTopic: (newTopic: string) => {},
+
+    imagePrompts: '',
+    setImagePrompts: (newImagePrompts: string) => {},
+    imagePromptsArray: [],
+    setImagePromptsArray: (newImagePromptsArray: string[]) => {},
+
     splitUpScript: '',
     setSplitUpScript: (newSplitUpScript: string) => {},
     splitUpScriptArray: [],
@@ -43,21 +56,31 @@ export function ShortProvider({ children }) {
 
     const [script, setScript] = useState('');
     const [scriptArray, setScriptArray] = useState<string[]>([]);
+
     const [topic, setTopic] = useState('');
+
     const [imagePrompts, setImagePrompts] = useState('');
+    const [imagePromptsArray, setImagePromptsArray] = useState<string[]>([]);
+
     const [splitUpScript, setSplitUpScript] = useState('');
     const [splitUpScriptArray, setSplitUpScriptArray] = useState<string[]>([]);
+
 
     return (
         <ShortContext.Provider value={{ 
             script, 
             setScript, 
-            topic, 
-            setTopic, 
-            imagePrompts, 
-            setImagePrompts,
             scriptArray,
             setScriptArray,
+
+            topic, 
+            setTopic, 
+
+            imagePrompts, 
+            setImagePrompts,
+            imagePromptsArray,
+            setImagePromptsArray,
+
             splitUpScript,
             setSplitUpScript,
             splitUpScriptArray,

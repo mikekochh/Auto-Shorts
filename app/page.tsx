@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Script from './Script/page';
-import ImagePrompt from './ImagePrompt/page';
+import Images from './Images/page';
 import { useStep } from './context/stepContext';
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
           <div><Script/></div>
         )}
         {stepCounter == 2 && (
-          <div><ImagePrompt /></div>
+          <div><Images /></div>
         )} 
       </div>
     </main>
