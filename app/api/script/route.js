@@ -28,7 +28,6 @@ export async function POST(request) {
     } catch (error) {
         return NextResponse.json({ message: "There was an error writing the script!"}, { error });
     }
-
 }
 
 async function writeScript(scriptPrompt) {

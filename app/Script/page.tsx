@@ -1,12 +1,22 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStep } from '../context/stepContext';
 import { useShort } from '../context/shortContext';
 
 export default function Script() {
 
     const { nextStep } = useStep();
-    const { setScript, topic, setTopic, setImagePrompts } = useShort();
+    const { 
+        setScript, 
+        topic, 
+        setTopic, 
+        setImagePrompts, 
+        scriptArray, 
+        splitUpScript,
+        setSplitUpScript,
+        setScriptArray, 
+        setSplitUpScriptArray 
+    } = useShort();
     
     const [details, setDetails] = useState(''); 
     const [scriptResponse, setScriptResponse] = useState('');
@@ -33,11 +43,32 @@ export default function Script() {
             const data = await response.json();
             console.log("The data: ", data.newScript[0].message.content);
             setScriptResponse(data.newScript[0].message.content);
+            createScriptArray(data.newScript[0].message.content);
         } catch (err) {
             setError('Failed to fetch script: ' + err.message);
         }
         setIsLoading(false);
     };
+
+    const createScriptArray = async (script: string) => {
+        const cleanedScript = script.replace(/^\s*\d+\.\s*"?|"?$/gm, '');
+
+        const sentences = cleanedScript.split('\n').filter(line => line.trim() !== '');
+
+        console.log("sentences split into array: ", sentences);
+
+        setScriptArray(sentences);
+    }
+
+    const createSplitUpScriptArray = async (splitScript: string) => {
+        const cleanedScript = splitScript.replace(/^\s*\d+\.\s*"?|"?$/gm, '');
+
+        const sentences = cleanedScript.split('\n').filter(line => line.trim() !== '');
+
+        console.log("sentences split into array: ", sentences);
+
+        setSplitUpScriptArray(sentences);
+    }
 
     function formatText(text: string) {
         return text.split('\n').map((line, index) => (
@@ -48,7 +79,28 @@ export default function Script() {
         ));
     }
 
-    const createImagePrompts = async () => {
+    const createSplitUpScript = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await fetch('/api/splitUpScript', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ script: scriptResponse, scriptLines: scriptArray.length })
+            })
+
+            const data = await response.json();
+            console.log("data from splitting script: ", data.newScript[0].message.content);
+            setSplitUpScript(data.newScript[0].message.content);
+            createImagePrompts(data.newScript[0].message.content)
+        } catch (err) {
+            console.log("There was an error splitting up the script for image processing: ", err);
+        }
+    }
+
+    const createImagePrompts = async (scriptToBeImaged: string) => {
         setIsLoading(true);
         setError('');
         try {
@@ -57,7 +109,7 @@ export default function Script() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ topic: topic, script: scriptResponse})
+                body: JSON.stringify({ topic: topic, script: scriptToBeImaged})
             });
             const data = await response.json();
             console.log("The data: ", data.newImagePrompts[0].message.content);
@@ -71,7 +123,8 @@ export default function Script() {
     const selectScript = () => {
         nextStep();
         setScript(scriptResponse);
-        createImagePrompts();
+        createSplitUpScript();
+        // createImagePrompts();
     }
 
     const editScript = () => {

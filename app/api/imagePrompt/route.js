@@ -9,17 +9,16 @@ export async function POST(request) {
 
     const body = await request.json();
 
-    const shortTopic = body.topic;
-    const shortScript = body.script;
+    // const shortTopic = body.topic;
+    const script = body.script;
 
-    const imagePromptBeginning = "I am creating a youtube short talking about " + shortTopic + ".";
-    const imagePromptMiddle = "Here is the script that I have written for this youtube short: \n###\n" + shortScript;
-    const imagePromptEnding = "Give me a list of text prompts that I can use with midjourney to generate images for each of these sentences in the script. Just give me the text prompts, absolutely nothing else.";
 
-    const fullImagePrompts = imagePromptBeginning + imagePromptMiddle + imagePromptEnding;
+    const imagePromptBeginning = "I want you to produce image prompts for midjourney for me to create visuals for each part of this script. I want an image for each line. Create an image prompt that is relevant and would look cool for each line of this script. Only return to me the image prompt list as a numbered list, nothing else. Here is the script:\n###\n";
+
+    const imagePromptFull = imagePromptBeginning + script;
 
     try {
-        const newImagePrompts = await writeImagePrompts(fullImagePrompts);
+        const newImagePrompts = await writeImagePrompts(imagePromptFull);
         return NextResponse.json({ newImagePrompts }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ message: "There was an error writing the image prompts!"}, { error });
@@ -28,7 +27,7 @@ export async function POST(request) {
 
 async function writeImagePrompts(scriptPrompt) {
     const chatCompletion = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-turbo",
         messages: [{role: "user", content: scriptPrompt}],
     })
     console.log('chatCompletion: ', chatCompletion);
