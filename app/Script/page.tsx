@@ -6,7 +6,7 @@ import { useShort } from '../context/shortContext';
 export default function Script() {
 
     const { nextStep } = useStep();
-    const { setScript, topic, setTopic } = useShort();
+    const { setScript, topic, setTopic, setImagePrompts } = useShort();
     
     const [details, setDetails] = useState(''); 
     const [scriptResponse, setScriptResponse] = useState('');
@@ -15,7 +15,6 @@ export default function Script() {
     const [editMode, setEditMode] = useState(false);
 
     const fetchScript = async () => {
-
         if (!topic) {
             setError('Please enter a topic for your short.');
             return;
@@ -49,9 +48,30 @@ export default function Script() {
         ));
     }
 
+    const createImagePrompts = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await fetch('/api/imagePrompt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ topic: topic, script: scriptResponse})
+            });
+            const data = await response.json();
+            console.log("The data: ", data.newImagePrompts[0].message.content);
+            setImagePrompts(data.newImagePrompts[0].message.content);
+        } catch (err) {
+            setError('Failed to fetch image prompts: ' + err.message);
+        }
+        setIsLoading(false);
+    }
+
     const selectScript = () => {
         nextStep();
         setScript(scriptResponse);
+        createImagePrompts();
     }
 
     const editScript = () => {
@@ -59,6 +79,10 @@ export default function Script() {
     }
 
     const finishedEdit = () => {
+        if (!scriptResponse) {
+            setError("Please enter a script");
+            return;
+        }
         setEditMode(false);
     }
 

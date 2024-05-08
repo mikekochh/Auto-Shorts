@@ -18,7 +18,8 @@ export async function POST(request) {
     if (scriptDetails) {
         fullScriptPrompt += "Incorporate these details into the script: " + scriptDetails + "\n";
     }
-    const scriptPromptEnding = "Add two line breaks in between each sentence. Only give me the narrator text for each sentence, nothing else at all. Just narrator text.";
+    // Add two line breaks in between each sentence.
+    const scriptPromptEnding = "Return the script as a numbered list. Make it no longer than 6 sentences. Only give me the narrator text for each sentence, nothing else at all. Just narrator text.";
     fullScriptPrompt += scriptPromptEnding;
 
     try {

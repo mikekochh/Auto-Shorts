@@ -5,7 +5,7 @@ import { useShort } from '../context/shortContext';
 
 export default function ImagePrompt() {
 
-    const { script, topic } = useShort();
+    const { script, topic, imagePrompts } = useShort();
     const { nextStep, prevStep } = useStep();
 
     function formatText(text: string) {
@@ -25,6 +25,8 @@ export default function ImagePrompt() {
             <p>{topic}</p>
             <p>Here is the script from last page:</p>
             <p>{formatText(script)}</p>
+            <p>Here are the image prompts for this script:</p>
+            <p>{formatText(imagePrompts)}</p>
         </div>
     </main>
     );
