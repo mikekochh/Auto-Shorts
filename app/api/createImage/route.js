@@ -24,33 +24,33 @@ export async function POST(request) {
 
         console.log("imageID: ", imageID);
 
-        let statusPending = true;
-
-        while(statusPending) {
-            console.log("waiting...");
-            const imageReadyResponse = await axios.get(`http://cl.imagineapi.dev/items/images/${imageID}`, {
+        while(true) {
+            console.log('Checking image details');
+            const responseImage = await fetch(`https://cl.imagineapi.dev/items/images/${imageID}`, {
                 method: 'GET',
                 headers: {
-                  'Authorization': 'Bearer ' + bearerToken, 
-                  'Content-Type': 'application/json'
+                    'Authorization': bearerToken,
+                    'Content-Type': 'application/json'
                 }
-            })
+            });
+            console.log("response: ", responseImage);
+            
+            const responseData = await responseImage.json();
+            console.log("responseData: ", responseData);
 
-            const responseData = await imageReadyResponse.json();
+            if (responseData.data.status === 'completed' || responseData.data.status === 'failed') {
+                console.log('Completed image detials', responseData.data);
+                return NextResponse.json({image: responseData.data});
+            }
 
-            console.log("imageResponse status: ", responseData);
-
-            // if (imageReadyResponse.data.status !== 'pending') {
-            //     console.log("imageReadyResponse data: ", imageReadyResponse.data);
-            //     statusPending = false;
-            // }
+            await sleep(5000);
         }
-
-
-        return NextResponse.json(responseData); // Send the actual data back
     } catch (error) {
         console.error(error);
-        // The second parameter of NextResponse.json() should be status code, not an object
         return NextResponse.json({ message: "There was an error creating the image!", error: error.toString() }, 500);
     }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

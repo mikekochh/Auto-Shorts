@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useStep } from '../context/stepContext';
 import { useShort } from '../context/shortContext';
 
-import axios from 'axios';
-
 export default function Images() {
 
     const { 
@@ -18,7 +16,8 @@ export default function Images() {
         setImages
     } = useShort();
     const { nextStep, prevStep } = useStep();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [image, setImage] = useState({});
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -34,6 +33,13 @@ export default function Images() {
                     });
 
                     console.log('response: ', response);
+
+                    const data = await response.json();
+
+                    setImage(data.image);
+                    setLoading(false);
+
+                    console.log("the data: ", data);
                 }
             } catch (error) {
                 console.error('Failed to fetch data:', error);
@@ -81,8 +87,20 @@ export default function Images() {
         <main className="flex min-h-screen flex-col items-center justify-center p-24">
             <div className="w-full max-w-5xl flex flex-col items-center text-sm font-mono">
                 <h1 className="text-green-500 text-center pb-3 text-4xl">Step 2: Create the Images</h1>
-                <p>Here are the image prompts:</p>
-                <p>{formatText(imagePrompts)}</p>
+                {loading ? (
+                    <div>
+                        <p className="text-green-500 text-center pb-3 text-xl">Your images are loading now...</p>
+                    </div>
+                ) : (
+                    <div>
+                        <p className="text-green-500 text-center pb-3 text-xl">Here are your images:</p>
+                        <div className="flex flex-wrap justify-center">
+                            {image?.upscaled_urls.map((url, index) => (
+                                <img key={index} src={url} alt={`Upscaled image ${index + 1}`} className="m-2" style={{ width: "150px", height: "auto" }}/>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </main>
     );
