@@ -25,6 +25,8 @@ interface ShortContextType {
 
     images: object[];
     setImages: (newImages: object[]) => void;
+    selectedImages: string[];
+    setSelectedImages: (newSelectedImages: string[]) => void;
 }
 
 const defaultState: ShortContextType = {
@@ -47,7 +49,9 @@ const defaultState: ShortContextType = {
     setSplitUpScriptArray: (newSplitScriptArray: string[]) => {},
 
     images: [],
-    setImages: (newImages: object[]) => {}
+    setImages: (newImages: object[]) => {},
+    selectedImages: [],
+    setSelectedImages: (newSelectedImages: string[]) => {}
 };
 
 const ShortContext = createContext<ShortContextType>(defaultState);
@@ -241,7 +245,8 @@ export function ShortProvider({ children }) {
             ]
         }
     ])
-    
+
+    const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
     return (
         <ShortContext.Provider value={{ 
@@ -265,6 +270,8 @@ export function ShortProvider({ children }) {
 
             images,
             setImages,
+            selectedImages,
+            setSelectedImages
         }}>
             {children}
         </ShortContext.Provider>

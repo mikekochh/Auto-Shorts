@@ -11,7 +11,9 @@ export default function Images() {
         setImagePromptsArray, 
         scriptArray,
         images,
-        setImages
+        setImages,
+        selectedImages,
+        setSelectedImages
     } = useShort();
     const { nextStep, prevStep } = useStep();
     const [loading, setLoading] = useState(false);
@@ -138,6 +140,7 @@ function ImageSelectionComponent({ images, scriptArray }) {
     };
 
     useEffect(() => {
+        console.log("selectedIndices: ", selectedIndices);
         if (Object.keys(selectedIndices).length !== scriptArray.length) {
             setSubmitDisabled(true);
             console.log("Are we getting here?");
@@ -158,6 +161,10 @@ function ImageSelectionComponent({ images, scriptArray }) {
 
     const submitImages = async () => {
         console.log("submitImages running...");
+
+
+
+
     }
 
     return (
