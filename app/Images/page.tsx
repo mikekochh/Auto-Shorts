@@ -15,9 +15,6 @@ export default function Images() {
     } = useShort();
     const { nextStep, prevStep } = useStep();
     const [loading, setLoading] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
-
-    console.log("Images data: ", images);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -117,31 +114,86 @@ export default function Images() {
                     </div>
                 ) : (
                     <div>
-                        <p className="text-center pb-3 text-xl">Select Images to be turned into videos for each part of the script</p><br/><br/>
-                        <div className="grid grid-cols-4 gap-4 justify-center">
-                            {images.map((image, imageIndex) => (
-                                <React.Fragment key={`image-${imageIndex}`}>
-                                    <div className="col-span-4">
-                                        <p className=" text-center text-xl">{scriptArray[imageIndex]}</p>
-                                    </div>
-                                    {image.upscaled_urls?.map((url, urlIndex) => (
-                                        <div key={`${imageIndex}-${urlIndex}`} className="text-center">
-                                            <img 
-                                                src={url} 
-                                                alt={`Upscaled image ${imageIndex + 1} url ${urlIndex + 1}`} 
-                                                className={`m-2 ${selectedImage === imageIndex && selectedUrl === urlIndex ? 'border-4 border-blue-500' : ''}`}
-                                                style={{ width: "100%", height: "auto" }}
-                                                // onClick={() => { setSelectedImage(imageIndex); setSelectedUrl(urlIndex); }}
-                                            />
-                                        </div>
-                                    ))}
-                                </React.Fragment>
-                            ))}
-                        </div>
+                        <ImageSelectionComponent 
+                            images={images} 
+                            scriptArray={scriptArray}
+                        />
                     </div>
                 )}
             </div>
         </main>
     );
-
 }
+
+function ImageSelectionComponent({ images, scriptArray }) {
+
+    const [selectedIndices, setSelectedIndices] = useState({});
+    const [submitDisabled, setSubmitDisabled] = useState(true);
+
+    const handleImageClick = (imageIndex, urlIndex) => {
+        setSelectedIndices(prev => ({
+            ...prev,
+            [imageIndex]: prev[imageIndex] === urlIndex ? null : urlIndex
+        }));
+    };
+
+    useEffect(() => {
+        if (Object.keys(selectedIndices).length !== scriptArray.length) {
+            setSubmitDisabled(true);
+            console.log("Are we getting here?");
+            return;
+        }
+
+        for (const key in selectedIndices) {
+            if (selectedIndices.hasOwnProperty(key)) { 
+                if (selectedIndices[key] === null) {
+                    setSubmitDisabled(true);
+                    return;
+                }
+            }
+        }
+
+        setSubmitDisabled(false);
+    }, [selectedIndices])
+
+    const submitImages = async () => {
+        console.log("submitImages running...");
+    }
+
+    return (
+        <div>
+            <p className="text-center pb-3 text-xl">Select an image for each part of the script to be turned into a visual</p>
+            <div className="grid grid-cols-4 gap-4 justify-center">
+                {images.map((image, imageIndex) => (
+                    <React.Fragment key={`image-${imageIndex}`}>
+                        <div className="col-span-4">
+                            <p className="text-center text-xl">{scriptArray[imageIndex]}</p>
+                        </div>
+                        {image.upscaled_urls?.map((url, urlIndex) => (
+                            <div key={`${imageIndex}-${urlIndex}`} className="text-center">
+                                <img 
+                                    src={url} 
+                                    alt={`Upscaled image ${imageIndex + 1} url ${urlIndex + 1}`} 
+                                    className={`m-2 ${selectedIndices[imageIndex] === urlIndex ? ' border-4 border-blue-500' : ''}`}
+                                    style={{ width: "100%", height: "auto" }}
+                                    onClick={() => handleImageClick(imageIndex, urlIndex)}
+                                    draggable="false"
+                                />
+                            </div>
+                        ))}
+                    </React.Fragment>
+                ))}
+            </div>
+            <div className="text-center mt-5">
+                <button 
+                    onClick={submitImages} 
+                    disabled={submitDisabled}
+                    className={`px-4 py-2 text-white rounded mb-4 ${submitDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`}
+                >
+                    Generate Videos
+                </button>
+            </div>
+        </div>
+    );
+}
+
