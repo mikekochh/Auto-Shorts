@@ -60,16 +60,6 @@ export default function Script() {
         setScriptArray(sentences);
     }
 
-    const createSplitUpScriptArray = async (splitScript: string) => {
-        const cleanedScript = splitScript.replace(/^\s*\d+\.\s*"?|"?$/gm, '');
-
-        const sentences = cleanedScript.split('\n').filter(line => line.trim() !== '');
-
-        console.log("sentences split into array: ", sentences);
-
-        setSplitUpScriptArray(sentences);
-    }
-
     function formatText(text: string) {
         return text.split('\n').map((line, index) => (
             <React.Fragment key={index}>
@@ -79,53 +69,76 @@ export default function Script() {
         ));
     }
 
-    const createSplitUpScript = async () => {
+    const createImagePromptsNoSplit = async () => {
         setIsLoading(true);
         setError('');
         try {
-            const response = await fetch('/api/splitUpScript', {
+            const response = await fetch('/api/createImagePrompts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ script: scriptResponse, scriptLines: scriptArray.length })
-                // body: JSON.stringify({ scriptArray })
+                body: JSON.stringify({ topic, script: scriptResponse })
             })
 
             const data = await response.json();
-            console.log("split up script: ", data.newScript[0].message.content);
-            setSplitUpScript(data.newScript[0].message.content);
-            createImagePrompts(data.newScript[0].message.content)
-        } catch (err) {
-            console.log("There was an error splitting up the script for image processing: ", err);
-        }
-    }
-
-    const createImagePrompts = async (scriptToBeImaged: string) => {
-        console.log("createImagePrompts...");
-        setIsLoading(true);
-        setError('');
-        try {
-            const response = await fetch('/api/imagePrompt', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ topic, script: scriptToBeImaged})
-            });
-            const data = await response.json();
-            console.log("Setting imagePromptsArray: ", data);
+            console.log("new image prompts: ", data);
             setImagePromptsArray(data.imagePrompts);
+
         } catch (err) {
-            setError('Failed to fetch image prompts: ' + err.message);
+            console.log("There was an error creating the image prompts: ", err);
         }
+
         setIsLoading(false);
     }
+
+    // TODO: reimplement this code if we want to split the sentences back up for the videos
+    // const createSplitUpScript = async () => {
+    //     setIsLoading(true);
+    //     setError('');
+    //     try {
+    //         const response = await fetch('/api/splitUpScript', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ script: scriptResponse, scriptLines: scriptArray.length })
+    //         })
+
+    //         const data = await response.json();
+    //         console.log("split up script: ", data.newScript[0].message.content);
+    //         setSplitUpScript(data.newScript[0].message.content);
+    //         createImagePrompts(data.newScript[0].message.content)
+    //     } catch (err) {
+    //         console.log("There was an error splitting up the script for image processing: ", err);
+    //     }
+    // }
+    // const createImagePrompts = async (scriptToBeImaged: string) => {
+    //     console.log("createImagePrompts...");
+    //     setIsLoading(true);
+    //     setError('');
+    //     try {
+    //         const response = await fetch('/api/imagePrompt', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ topic, script: scriptToBeImaged})
+    //         });
+    //         const data = await response.json();
+    //         console.log("Setting imagePromptsArray: ", data);
+    //         setImagePromptsArray(data.imagePrompts);
+    //     } catch (err) {
+    //         setError('Failed to fetch image prompts: ' + err.message);
+    //     }
+    //     setIsLoading(false);
+    // }
 
     const selectScript = () => {
         nextStep();
         setScript(scriptResponse);
-        createSplitUpScript();
+        createImagePromptsNoSplit();
+        // createSplitUpScript();
     }
 
     const editScript = () => {

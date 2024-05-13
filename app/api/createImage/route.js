@@ -11,6 +11,13 @@ export async function POST(request) {
         prompt: body.imagePrompt + " --ar 9:16"
     };
 
+    console.log('imagePrompt: ', body.imagePrompt);
+
+    if (!body.imagePrompt) {
+        //return at this point, we do not want to make bogus images
+        throw Error("Image prompts are undefined");
+    }
+
     console.log("just want to make sure were getting here: ", data);
 
     try {
@@ -54,7 +61,7 @@ export async function POST(request) {
 
             await sleep(5000);
         }
-        return NextResponse.json({message: "testing"});
+        // return NextResponse.json({message: "testing"});
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: "There was an error creating the image!", error: error.toString() }, 500);
