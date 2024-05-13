@@ -11,6 +11,8 @@ export async function POST(request) {
         prompt: body.imagePrompt + " --ar 9:16"
     };
 
+    console.log("just want to make sure were getting here: ", data);
+
     try {
         const response = await axios.post('http://cl.imagineapi.dev/items/images/', data, {
             headers: {
@@ -43,8 +45,16 @@ export async function POST(request) {
                 return NextResponse.json({image: responseData.data});
             }
 
+            console.log('responseData.data.error: ', responseData.data.error);
+
+            if (responseData.data.error) {
+                console.log("There has been some error in generating the image: ", responseData.data.error);
+                return NextResponse.json({image: responseData.data});
+            }
+
             await sleep(5000);
         }
+        return NextResponse.json({message: "testing"});
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: "There was an error creating the image!", error: error.toString() }, 500);

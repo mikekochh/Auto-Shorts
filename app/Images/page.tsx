@@ -12,47 +12,96 @@ export default function Images() {
         imagePromptsArray, 
         setImagePromptsArray, 
         setScriptArray,
+        scriptArray,
         images,
         setImages
     } = useShort();
     const { nextStep, prevStep } = useStep();
-    const [loading, setLoading] = useState(true);
-    const [image, setImage] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    console.log("Images data: ", images);
 
     useEffect(() => {
         const fetchImages = async () => {
             setLoading(true);
+            const fetchPromises = imagePromptsArray.map(prompt => {
+                console.log("prompt: ", prompt);
+                return fetch('/api/createImage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ imagePrompt: prompt.imagePrompt })
+                }).then(response => response.json())
+                .then(data => {
+                    return { image: data.image, associatedScriptSentence: prompt.associatedScriptSentence };
+                });
+            });
+    
             try {
-                for(let i = 0; i < 1; i++) {
-                    const response = await fetch('/api/createImage', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ imagePrompt: imagePromptsArray[i] }) 
-                    });
-
-                    console.log('response: ', response);
-
-                    const data = await response.json();
-
-                    setImage(data.image);
-                    setLoading(false);
-
-                    console.log("the data: ", data);
-                }
+                const imagesData = await Promise.all(fetchPromises);
+                console.log("imagesData: ", imagesData);
+                // setImages(imagesData.map(item => item.image));
+                const formattedData = imagesData.map(item => ({
+                    image: item.image,
+                    associatedScriptSentence: item.associatedScriptSentence
+                }));
+                setImages(formattedData);
+                
+                console.log("All image data:", imagesData);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         if (imagePromptsArray.length > 0) {
             fetchImages();
         }
-        
     }, [imagePromptsArray]);
+    
+
+    // useEffect(() => {
+    //     const fetchImages = async () => {
+    //         setLoading(true);
+    //         try {
+    //             for(let i = 0; i < 3; i++) {
+    //                 const response = await fetch('/api/createImage', {
+    //                     method: 'POST',
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                     },
+    //                     body: JSON.stringify({ imagePrompt: imagePromptsArray[i].imagePrompt }) 
+    //                 });
+
+    //                 // so what is returning is just the image. we need to take the image,
+    //                 // specifically the upscaled_urls, and put them in a new object with the associated sentence
+    //                 // then we grab the associatedSentence from the scriptArray object and present it over the images
+
+    //                 console.log('response: ', response);
+
+    //                 const data = await response.json();
+
+    //                 // setImage(data.image);
+    //                 setImages(prevImages => [...prevImages, data.image]);
+    //                 setLoading(false);
+
+    //                 console.log("the data: ", data);
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to fetch data:', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     if (imagePromptsArray.length > 0) {
+    //         fetchImages();
+    //     }
+        
+    // }, [imagePromptsArray]);
 
     useEffect(() => {
         if (imagePrompts) {
@@ -93,10 +142,25 @@ export default function Images() {
                     </div>
                 ) : (
                     <div>
-                        <p className="text-green-500 text-center pb-3 text-xl">Here are your images:</p>
-                        <div className="flex flex-wrap justify-center">
-                            {image?.upscaled_urls.map((url, index) => (
-                                <img key={index} src={url} alt={`Upscaled image ${index + 1}`} className="m-2" style={{ width: "150px", height: "auto" }}/>
+                        <p className="text-center pb-3 text-xl">Select Images to be turned into videos for each part of the script</p><br/><br/>
+                        <div className="grid grid-cols-4 gap-4 justify-center">
+                            {images.map((image, imageIndex) => (
+                                <React.Fragment key={`image-${imageIndex}`}>
+                                    <div className="col-span-4">
+                                        <p className=" text-center text-xl">{scriptArray[image.associatedScriptSentence - 1]}</p>
+                                    </div>
+                                    {image.image.upscaled_urls.map((url, urlIndex) => (
+                                        <div key={`${imageIndex}-${urlIndex}`} className="text-center">
+                                            <img 
+                                                src={url} 
+                                                alt={`Upscaled image ${imageIndex + 1} url ${urlIndex + 1}`} 
+                                                className={`m-2 ${selectedImage === imageIndex && selectedUrl === urlIndex ? 'border-4 border-blue-500' : ''}`}
+                                                style={{ width: "100%", height: "auto" }}
+                                                // onClick={() => { setSelectedImage(imageIndex); setSelectedUrl(urlIndex); }}
+                                            />
+                                        </div>
+                                    ))}
+                                </React.Fragment>
                             ))}
                         </div>
                     </div>
