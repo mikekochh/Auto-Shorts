@@ -69,7 +69,7 @@ export function useShort() {
 export function ShortProvider({ children }) {
 
     const [script, setScript] = useState('');
-    const [scriptArray, setScriptArray] = useState<string[]>([]);
+    // const [scriptArray, setScriptArray] = useState<string[]>([]);
 
     // const [scriptArray, setScriptArray] = useState<string[]>([
     //     "This is the first example sentence for the script array.",
@@ -80,6 +80,10 @@ export function ShortProvider({ children }) {
     //     "Finally, a sixth sentence to round off our script array."
     // ]);
 
+    const [scriptArray, setScriptArray] = useState<string[]>([
+        "This is the first example sentence for the script array."
+    ]);
+
     const [topic, setTopic] = useState('');
 
     const [imagePrompts, setImagePrompts] = useState('');
@@ -88,7 +92,7 @@ export function ShortProvider({ children }) {
     const [splitUpScript, setSplitUpScript] = useState('');
     const [splitUpScriptArray, setSplitUpScriptArray] = useState<string[]>([]);
 
-    const [images, setImages] = useState<object[]>([]);
+    // const [images, setImages] = useState<object[]>([]);
 
     // Dummy data for if we are splitting up the sentences
     // const [images, setImages] = useState<object[]>([
@@ -251,6 +255,18 @@ export function ShortProvider({ children }) {
     //         ]
     //     }
     // ])
+
+    const [images, setImages] = useState<object[]>([
+        {
+            "id": "9c0d0e7c-9b24-46a2-9fcf-bdc02bcdace3",
+            "upscaled_urls": [
+                "https://cl.imagineapi.dev/assets/23d39bba-ac13-4a50-b120-bf0d7ebe0ec1/23d39bba-ac13-4a50-b120-bf0d7ebe0ec1.png",
+                "https://cl.imagineapi.dev/assets/26c64b23-bb0d-4a7d-8f03-d8364f4e12b9/26c64b23-bb0d-4a7d-8f03-d8364f4e12b9.png",
+                "https://cl.imagineapi.dev/assets/bcd30628-a1bb-4f5a-9bb6-e3df0a011a5a/bcd30628-a1bb-4f5a-9bb6-e3df0a011a5a.png",
+                "https://cl.imagineapi.dev/assets/ef4654ed-77f8-4920-ae85-0339f095a7a8/ef4654ed-77f8-4920-ae85-0339f095a7a8.png"
+            ]
+        }
+    ])
 
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
 

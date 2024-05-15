@@ -12,8 +12,6 @@ export default function Images() {
         scriptArray,
         images,
         setImages,
-        selectedImages,
-        setSelectedImages
     } = useShort();
     const { nextStep, prevStep } = useStep();
     const [loading, setLoading] = useState(false);
@@ -123,6 +121,9 @@ export default function Images() {
 
 function ImageSelectionComponent({ images, scriptArray }) {
 
+    const { setSelectedImages } = useShort();
+    const { nextStep } = useStep();
+
     const [selectedIndices, setSelectedIndices] = useState({});
     const [submitDisabled, setSubmitDisabled] = useState(true);
 
@@ -155,10 +156,14 @@ function ImageSelectionComponent({ images, scriptArray }) {
 
     const submitImages = async () => {
         console.log("submitImages running...");
+        let selectedImagesArray = [];
+        for (let i = 0; i < images.length; i++) {
+            selectedImagesArray.push(images[i].upscaled_urls[selectedIndices[i]])
+        }
+        console.log("selectedImagesArray: ", selectedImagesArray);
 
-
-
-
+        setSelectedImages(selectedImagesArray);
+        nextStep();
     }
 
     return (

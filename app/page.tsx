@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Script from './Script/page';
 import Images from './Images/page';
+import Videos from './Videos/page';
 import { useStep } from './context/stepContext';
 
 export default function Home() {
@@ -15,6 +16,9 @@ export default function Home() {
         )}
         {stepCounter == 2 && (
           <div><Images /></div>
+        )} 
+        {stepCounter == 3 && (
+          <div><Videos /></div>
         )} 
       </div>
     </main>
