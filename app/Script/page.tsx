@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStep } from '../context/stepContext';
 import { useShort } from '../context/shortContext';
+import axios from 'axios';
+import AudioPlayer from '../components/AudioPlayer';
 
 export default function Script() {
 
@@ -14,7 +16,9 @@ export default function Script() {
         scriptArray, 
         setSplitUpScript,
         setScriptArray, 
-        setSplitUpScriptArray 
+        setSplitUpScriptArray,
+        voicesArray,
+        setVoicesArray
     } = useShort();
     
     const [details, setDetails] = useState(''); 
@@ -23,6 +27,17 @@ export default function Script() {
     const [error, setError] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [useExistingScript, setUseExistingScript] = useState(false);
+    const [playAudioAvailable, setPlayAudioAvailable] = useState(false);
+
+    useEffect(() => {
+        if (scriptArray.length > 0) {
+            if (voicesArray.length === scriptArray.length) {
+                setPlayAudioAvailable(true);
+                return;
+            }
+        }
+        setPlayAudioAvailable(false);
+    }, voicesArray)
 
     const fetchScript = async () => {
         if (!topic) {
@@ -68,6 +83,58 @@ export default function Script() {
             </React.Fragment>
         ));
     }
+
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const createVoicesArray = async () => {
+        try {
+            const filenames = [];
+
+            for (const scriptLine of scriptArray) {
+                try {
+                    const response = await axios.post('/api/voice/createVoice', { scriptLine });
+                    filenames.push(response.data.filename);
+                } catch (err) {
+                    console.error('Error fetching MP3:', err);
+                    filenames.push(null);
+                }
+
+                await delay(500);
+            }
+
+            setVoicesArray(filenames.filter(filename => filename !== null));
+        } catch (error) {
+            console.error('Failed to create voices array:', error);
+        }
+    };
+
+    const playScriptAudio = async () => {
+        console.log("voices Array: ", voicesArray);
+    };
+
+    // const createVoicesArray = async () => {
+    //     try {
+    //         const mp3s = [];
+    
+    //         for (const scriptLine of scriptArray) {
+    //             try {
+    //                 const response = await axios.post('/api/voice/createVoice', { scriptLine });
+    //                 mp3s.push(response.data);
+    //                 console.log("response.data: ", response.data);
+    //             } catch (err) {
+    //                 console.error('Error fetching MP3:', err);
+    //                 mp3s.push(null);
+    //             }
+    
+    //             await delay(500);
+    //         }
+    
+    //         setVoicesArray(mp3s.filter(url => url !== null));
+    //     } catch (error) {
+    //         console.error('Failed to create voices array:', error);
+    //     }
+    // }
+    
 
     const createImagePromptsNoSplit = async () => {
         setIsLoading(true);
@@ -135,9 +202,10 @@ export default function Script() {
     // }
 
     const selectScript = () => {
-        nextStep();
+        // nextStep();
         setScript(scriptResponse);
-        createImagePromptsNoSplit();
+        createVoicesArray();
+        // createImagePromptsNoSplit();
         // createSplitUpScript();
     }
 
@@ -156,6 +224,25 @@ export default function Script() {
     const redoScript = () => {
         setScriptResponse('');
     }
+
+    // const playScriptAudio = async () => {
+    //     for (const filename of voicesArray) {
+    //         if (filename) {
+    //             try {
+    //                 const response = await axios.post('/api/voice/playVoice', { filename });
+    //                 if (response.data.success) {
+    //                     console.log('Playing audio:', filename);
+    //                 } else {
+    //                     console.error('Failed to play audio:', filename);
+    //                 }
+
+    //                 await delay(500);
+    //             } catch (error) {
+    //                 console.error('Error playing audio:', error);
+    //             }
+    //         }
+    //     }
+    // };
 
     const handleUseExistingScript = () => {
         setUseExistingScript(true);
@@ -260,6 +347,11 @@ export default function Script() {
                         >
                             Redo Script
                         </button>
+                        {voicesArray.length > 5 && (
+                            <div>
+                                <AudioPlayer voicesArray={voicesArray}/>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

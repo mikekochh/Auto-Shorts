@@ -21,7 +21,7 @@ export function useStep() {
 }
 
 export function StepProvider({ children }) {
-    const [stepCounter, setStepCounter] = useState(2);
+    const [stepCounter, setStepCounter] = useState(1);
 
     // Method to increment the stepCounter
     const nextStep = () => {

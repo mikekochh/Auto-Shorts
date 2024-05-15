@@ -48,12 +48,6 @@ export default function Images() {
         }
     }, [imagePromptsArray]);
 
-    useEffect(() => {
-        if (images) {
-            console.log("images: ", images);
-        }
-    }, [images])
-
     // when we are splitting up the sentences
     // useEffect(() => {
     //     const fetchImages = async () => {

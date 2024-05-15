@@ -27,6 +27,9 @@ interface ShortContextType {
     setImages: (newImages: object[]) => void;
     selectedImages: string[];
     setSelectedImages: (newSelectedImages: string[]) => void;
+
+    voicesArray: object[];
+    setVoicesArray: (newVoicesArray: object[]) => void;
 }
 
 const defaultState: ShortContextType = {
@@ -51,7 +54,10 @@ const defaultState: ShortContextType = {
     images: [],
     setImages: (newImages: object[]) => {},
     selectedImages: [],
-    setSelectedImages: (newSelectedImages: string[]) => {}
+    setSelectedImages: (newSelectedImages: string[]) => {},
+
+    voicesArray: [],
+    setVoicesArray: (newVoicesArray: object[]) => {}
 };
 
 const ShortContext = createContext<ShortContextType>(defaultState);
@@ -63,16 +69,16 @@ export function useShort() {
 export function ShortProvider({ children }) {
 
     const [script, setScript] = useState('');
-    // const [scriptArray, setScriptArray] = useState<string[]>([]);
+    const [scriptArray, setScriptArray] = useState<string[]>([]);
 
-    const [scriptArray, setScriptArray] = useState<string[]>([
-        "This is the first example sentence for the script array.",
-        "Here's another sample sentence, randomly included for testing.",
-        "Lastly, a third example to populate the script array.",
-        "An extra line just to spice things up a bit.",
-        "Second new sentence, adding more variety and context.",
-        "Finally, a sixth sentence to round off our script array."
-    ]);
+    // const [scriptArray, setScriptArray] = useState<string[]>([
+    //     "This is the first example sentence for the script array.",
+    //     "Here's another sample sentence, randomly included for testing.",
+    //     "Lastly, a third example to populate the script array.",
+    //     "An extra line just to spice things up a bit.",
+    //     "Second new sentence, adding more variety and context.",
+    //     "Finally, a sixth sentence to round off our script array."
+    // ]);
 
     const [topic, setTopic] = useState('');
 
@@ -82,7 +88,7 @@ export function ShortProvider({ children }) {
     const [splitUpScript, setSplitUpScript] = useState('');
     const [splitUpScriptArray, setSplitUpScriptArray] = useState<string[]>([]);
 
-    // const [images, setImages] = useState<object[]>([]);
+    const [images, setImages] = useState<object[]>([]);
 
     // Dummy data for if we are splitting up the sentences
     // const [images, setImages] = useState<object[]>([
@@ -189,64 +195,66 @@ export function ShortProvider({ children }) {
     // ])
 
     // Dummy data for when we are not splitting up sentences
-    const [images, setImages] = useState<object[]>([
-        {
-            "id": "9c0d0e7c-9b24-46a2-9fcf-bdc02bcdace3",
-            "upscaled_urls": [
-                "https://cl.imagineapi.dev/assets/23d39bba-ac13-4a50-b120-bf0d7ebe0ec1/23d39bba-ac13-4a50-b120-bf0d7ebe0ec1.png",
-                "https://cl.imagineapi.dev/assets/26c64b23-bb0d-4a7d-8f03-d8364f4e12b9/26c64b23-bb0d-4a7d-8f03-d8364f4e12b9.png",
-                "https://cl.imagineapi.dev/assets/bcd30628-a1bb-4f5a-9bb6-e3df0a011a5a/bcd30628-a1bb-4f5a-9bb6-e3df0a011a5a.png",
-                "https://cl.imagineapi.dev/assets/ef4654ed-77f8-4920-ae85-0339f095a7a8/ef4654ed-77f8-4920-ae85-0339f095a7a8.png"
-            ]
-        },
-        {
-            "id": "d7493160-52e5-4711-ba14-c2fa16fefe9d",
-            "upscaled_urls": [
-                "https://cl.imagineapi.dev/assets/8b344593-ee6c-4afd-82aa-cb9dcfe17d37/8b344593-ee6c-4afd-82aa-cb9dcfe17d37.png",
-                "https://cl.imagineapi.dev/assets/88c5e1c2-6a4b-4d10-8016-da87111eaf9f/88c5e1c2-6a4b-4d10-8016-da87111eaf9f.png",
-                "https://cl.imagineapi.dev/assets/d625736f-303c-496b-ab45-edfddeadadce/d625736f-303c-496b-ab45-edfddeadadce.png",
-                "https://cl.imagineapi.dev/assets/b60e7b0d-9990-427b-901d-7decfd6917fe/b60e7b0d-9990-427b-901d-7decfd6917fe.png"
-            ]
-        },
-        {
-            "id": "46ada02e-d558-4453-a17a-d635db1e7e1b",
-            "upscaled_urls": [
-                "https://cl.imagineapi.dev/assets/b4f4616f-dec4-4ea7-a044-36c1a9443695/b4f4616f-dec4-4ea7-a044-36c1a9443695.png",
-                "https://cl.imagineapi.dev/assets/5b688233-7606-4b6f-9c21-2c86f7ec8c79/5b688233-7606-4b6f-9c21-2c86f7ec8c79.png",
-                "https://cl.imagineapi.dev/assets/7e094825-4d25-4039-b54b-f86d11066808/7e094825-4d25-4039-b54b-f86d11066808.png",
-                "https://cl.imagineapi.dev/assets/2c69918a-0328-4d44-8265-e23a8029da77/2c69918a-0328-4d44-8265-e23a8029da77.png"
-            ]
-        },
-        {
-            "id": "b76e3a0e-c0b6-4e78-b895-53ac4a624c6f",
-            "upscaled_urls": [
-                "https://cl.imagineapi.dev/assets/7a291920-1ca5-4a26-a32d-9ad4a9fc49b5/7a291920-1ca5-4a26-a32d-9ad4a9fc49b5.png",
-                "https://cl.imagineapi.dev/assets/f75496a8-df3b-412c-a18c-5faf0471acc1/f75496a8-df3b-412c-a18c-5faf0471acc1.png",
-                "https://cl.imagineapi.dev/assets/51e6bb80-1e35-45ee-ba06-968fd3e5f612/51e6bb80-1e35-45ee-ba06-968fd3e5f612.png",
-                "https://cl.imagineapi.dev/assets/ed252575-2820-4bf4-a374-fec8d5323ad7/ed252575-2820-4bf4-a374-fec8d5323ad7.png"
-            ]
-        },
-        {
-            "id": "eaf074ed-a0b5-480c-83a3-434c1054dd12",
-            "upscaled_urls": [
-                "https://cl.imagineapi.dev/assets/3825dc05-f0a9-44b3-89b1-cc948fe4452e/3825dc05-f0a9-44b3-89b1-cc948fe4452e.png",
-                "https://cl.imagineapi.dev/assets/af478408-4766-4cc4-bb74-e1e8bde2ac84/af478408-4766-4cc4-bb74-e1e8bde2ac84.png",
-                "https://cl.imagineapi.dev/assets/7b2fb849-b626-4681-96ea-575f7b88b692/7b2fb849-b626-4681-96ea-575f7b88b692.png",
-                "https://cl.imagineapi.dev/assets/e68f6931-fc07-48b2-87c7-7712d4746273/e68f6931-fc07-48b2-87c7-7712d4746273.png"
-            ]
-        },
-        {
-            "id": "eaf074ed-a0b5-480c-83a3-434c1054dd12",
-            "upscaled_urls": [
-                "https://cl.imagineapi.dev/assets/3825dc05-f0a9-44b3-89b1-cc948fe4452e/3825dc05-f0a9-44b3-89b1-cc948fe4452e.png",
-                "https://cl.imagineapi.dev/assets/af478408-4766-4cc4-bb74-e1e8bde2ac84/af478408-4766-4cc4-bb74-e1e8bde2ac84.png",
-                "https://cl.imagineapi.dev/assets/7b2fb849-b626-4681-96ea-575f7b88b692/7b2fb849-b626-4681-96ea-575f7b88b692.png",
-                "https://cl.imagineapi.dev/assets/e68f6931-fc07-48b2-87c7-7712d4746273/e68f6931-fc07-48b2-87c7-7712d4746273.png"
-            ]
-        }
-    ])
+    // const [images, setImages] = useState<object[]>([
+    //     {
+    //         "id": "9c0d0e7c-9b24-46a2-9fcf-bdc02bcdace3",
+    //         "upscaled_urls": [
+    //             "https://cl.imagineapi.dev/assets/23d39bba-ac13-4a50-b120-bf0d7ebe0ec1/23d39bba-ac13-4a50-b120-bf0d7ebe0ec1.png",
+    //             "https://cl.imagineapi.dev/assets/26c64b23-bb0d-4a7d-8f03-d8364f4e12b9/26c64b23-bb0d-4a7d-8f03-d8364f4e12b9.png",
+    //             "https://cl.imagineapi.dev/assets/bcd30628-a1bb-4f5a-9bb6-e3df0a011a5a/bcd30628-a1bb-4f5a-9bb6-e3df0a011a5a.png",
+    //             "https://cl.imagineapi.dev/assets/ef4654ed-77f8-4920-ae85-0339f095a7a8/ef4654ed-77f8-4920-ae85-0339f095a7a8.png"
+    //         ]
+    //     },
+    //     {
+    //         "id": "d7493160-52e5-4711-ba14-c2fa16fefe9d",
+    //         "upscaled_urls": [
+    //             "https://cl.imagineapi.dev/assets/8b344593-ee6c-4afd-82aa-cb9dcfe17d37/8b344593-ee6c-4afd-82aa-cb9dcfe17d37.png",
+    //             "https://cl.imagineapi.dev/assets/88c5e1c2-6a4b-4d10-8016-da87111eaf9f/88c5e1c2-6a4b-4d10-8016-da87111eaf9f.png",
+    //             "https://cl.imagineapi.dev/assets/d625736f-303c-496b-ab45-edfddeadadce/d625736f-303c-496b-ab45-edfddeadadce.png",
+    //             "https://cl.imagineapi.dev/assets/b60e7b0d-9990-427b-901d-7decfd6917fe/b60e7b0d-9990-427b-901d-7decfd6917fe.png"
+    //         ]
+    //     },
+    //     {
+    //         "id": "46ada02e-d558-4453-a17a-d635db1e7e1b",
+    //         "upscaled_urls": [
+    //             "https://cl.imagineapi.dev/assets/b4f4616f-dec4-4ea7-a044-36c1a9443695/b4f4616f-dec4-4ea7-a044-36c1a9443695.png",
+    //             "https://cl.imagineapi.dev/assets/5b688233-7606-4b6f-9c21-2c86f7ec8c79/5b688233-7606-4b6f-9c21-2c86f7ec8c79.png",
+    //             "https://cl.imagineapi.dev/assets/7e094825-4d25-4039-b54b-f86d11066808/7e094825-4d25-4039-b54b-f86d11066808.png",
+    //             "https://cl.imagineapi.dev/assets/2c69918a-0328-4d44-8265-e23a8029da77/2c69918a-0328-4d44-8265-e23a8029da77.png"
+    //         ]
+    //     },
+    //     {
+    //         "id": "b76e3a0e-c0b6-4e78-b895-53ac4a624c6f",
+    //         "upscaled_urls": [
+    //             "https://cl.imagineapi.dev/assets/7a291920-1ca5-4a26-a32d-9ad4a9fc49b5/7a291920-1ca5-4a26-a32d-9ad4a9fc49b5.png",
+    //             "https://cl.imagineapi.dev/assets/f75496a8-df3b-412c-a18c-5faf0471acc1/f75496a8-df3b-412c-a18c-5faf0471acc1.png",
+    //             "https://cl.imagineapi.dev/assets/51e6bb80-1e35-45ee-ba06-968fd3e5f612/51e6bb80-1e35-45ee-ba06-968fd3e5f612.png",
+    //             "https://cl.imagineapi.dev/assets/ed252575-2820-4bf4-a374-fec8d5323ad7/ed252575-2820-4bf4-a374-fec8d5323ad7.png"
+    //         ]
+    //     },
+    //     {
+    //         "id": "eaf074ed-a0b5-480c-83a3-434c1054dd12",
+    //         "upscaled_urls": [
+    //             "https://cl.imagineapi.dev/assets/3825dc05-f0a9-44b3-89b1-cc948fe4452e/3825dc05-f0a9-44b3-89b1-cc948fe4452e.png",
+    //             "https://cl.imagineapi.dev/assets/af478408-4766-4cc4-bb74-e1e8bde2ac84/af478408-4766-4cc4-bb74-e1e8bde2ac84.png",
+    //             "https://cl.imagineapi.dev/assets/7b2fb849-b626-4681-96ea-575f7b88b692/7b2fb849-b626-4681-96ea-575f7b88b692.png",
+    //             "https://cl.imagineapi.dev/assets/e68f6931-fc07-48b2-87c7-7712d4746273/e68f6931-fc07-48b2-87c7-7712d4746273.png"
+    //         ]
+    //     },
+    //     {
+    //         "id": "eaf074ed-a0b5-480c-83a3-434c1054dd12",
+    //         "upscaled_urls": [
+    //             "https://cl.imagineapi.dev/assets/3825dc05-f0a9-44b3-89b1-cc948fe4452e/3825dc05-f0a9-44b3-89b1-cc948fe4452e.png",
+    //             "https://cl.imagineapi.dev/assets/af478408-4766-4cc4-bb74-e1e8bde2ac84/af478408-4766-4cc4-bb74-e1e8bde2ac84.png",
+    //             "https://cl.imagineapi.dev/assets/7b2fb849-b626-4681-96ea-575f7b88b692/7b2fb849-b626-4681-96ea-575f7b88b692.png",
+    //             "https://cl.imagineapi.dev/assets/e68f6931-fc07-48b2-87c7-7712d4746273/e68f6931-fc07-48b2-87c7-7712d4746273.png"
+    //         ]
+    //     }
+    // ])
 
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+    const [voicesArray, setVoicesArray] = useState<object[]>([]);
 
     return (
         <ShortContext.Provider value={{ 
@@ -271,7 +279,10 @@ export function ShortProvider({ children }) {
             images,
             setImages,
             selectedImages,
-            setSelectedImages
+            setSelectedImages,
+
+            voicesArray,
+            setVoicesArray
         }}>
             {children}
         </ShortContext.Provider>
