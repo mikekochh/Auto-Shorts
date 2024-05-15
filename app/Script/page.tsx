@@ -202,10 +202,10 @@ export default function Script() {
     // }
 
     const selectScript = () => {
-        // nextStep();
+        nextStep();
         setScript(scriptResponse);
         createVoicesArray();
-        // createImagePromptsNoSplit();
+        createImagePromptsNoSplit();
         // createSplitUpScript();
     }
 

@@ -71,18 +71,18 @@ export function ShortProvider({ children }) {
     const [script, setScript] = useState('');
     // const [scriptArray, setScriptArray] = useState<string[]>([]);
 
-    // const [scriptArray, setScriptArray] = useState<string[]>([
-    //     "This is the first example sentence for the script array.",
-    //     "Here's another sample sentence, randomly included for testing.",
-    //     "Lastly, a third example to populate the script array.",
-    //     "An extra line just to spice things up a bit.",
-    //     "Second new sentence, adding more variety and context.",
-    //     "Finally, a sixth sentence to round off our script array."
-    // ]);
-
     const [scriptArray, setScriptArray] = useState<string[]>([
-        "This is the first example sentence for the script array."
+        "During the roman empire, dream interpretation was a common practice.",
+        "Dreams were believed to hold messages from the gods, providing insight into the future.",
+        "Priests and philosophers were often consulted to decipher the meaning behind these nightly visions.",
+        "The interpretation of dreams played a significant role in decision-making and public policy.",
+        "Understand one’s dreams was crucial for navigating both personal and political matters.",
+        "Dream interpretation was seen as a way to connect with the divine and make sense of the world. "
     ]);
+
+    // const [scriptArray, setScriptArray] = useState<string[]>([
+    //     "This is the first example sentence for the script array."
+    // ]);
 
     const [topic, setTopic] = useState('');
 
